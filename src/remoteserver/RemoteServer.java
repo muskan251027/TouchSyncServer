@@ -373,6 +373,7 @@ public class RemoteServer extends javax.swing.JFrame {
                         }
                         if (num.equalsIgnoreCase("6")) {
                             System.out.println("6");
+                            robot = new Robot();
                             String c = in.readUTF();
                             char ch = c.charAt(0);
                             int asciiValue = (int) ch; // Convert char to int
@@ -880,8 +881,16 @@ public class RemoteServer extends javax.swing.JFrame {
 
                                 default:
                                 //Robot robot = new Robot();
-                                robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
-                                robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                    if(Character.isUpperCase(character)) {
+                                        robot.keyPress(KeyEvent.VK_SHIFT);
+                                        robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
+                                        robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                        robot.keyRelease(KeyEvent.VK_SHIFT);
+                                    }
+                                    else {
+                                        robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
+                                        robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                    }
                                 break;
 
                             }
