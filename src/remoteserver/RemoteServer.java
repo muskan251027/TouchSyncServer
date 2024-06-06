@@ -1200,36 +1200,36 @@ public class RemoteServer extends javax.swing.JFrame {
                                 // Press the Control key
                                 try {
                                     String osName = System.getProperty("os.name");
-                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
-                                    // Press the Control key
-                                    robot = new Robot();
-                                    robot.keyPress(KeyEvent.VK_CONTROL);
+                                    if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+                                        // Press the Control key
+                                        robot = new Robot();
+                                        robot.keyPress(KeyEvent.VK_CONTROL);
 
-                                    // Press the Up Arrow key
-                                    robot.keyPress(KeyEvent.VK_UP);
+                                        // Press the Up Arrow key
+                                        robot.keyPress(KeyEvent.VK_UP);
 
-                                    // Hold the keys for a moment (adjust as needed)
-                                    //robot.delay(1000);
-                                    // Release the Up Arrow key
-                                    robot.keyRelease(KeyEvent.VK_UP);
-                                    // Release the Control key first
-                                    robot.keyRelease(KeyEvent.VK_CONTROL);
-                                    
-                                }else{
+                                        // Hold the keys for a moment (adjust as needed)
+                                        //robot.delay(1000);
+                                        // Release the Up Arrow key
+                                        robot.keyRelease(KeyEvent.VK_UP);
+                                        // Release the Control key first
+                                        robot.keyRelease(KeyEvent.VK_CONTROL);
 
-                                    // Press the Windows key
-                                    robot.keyPress(KeyEvent.VK_WINDOWS);
-                                    // Press the Tab key while the Windows key is still pressed
-                                    robot.keyPress(KeyEvent.VK_TAB);
+                                    } else {
 
-                                    // Delay to hold the keys for a short duration
-                                    robot.delay(200);
+                                        // Press the Windows key
+                                        robot.keyPress(KeyEvent.VK_WINDOWS);
+                                        // Press the Tab key while the Windows key is still pressed
+                                        robot.keyPress(KeyEvent.VK_TAB);
 
-                                    // Release the Tab key
-                                    robot.keyRelease(KeyEvent.VK_TAB);
-                                    // Release the Windows key
-                                    robot.keyRelease(KeyEvent.VK_WINDOWS);
-                                }
+                                        // Delay to hold the keys for a short duration
+                                        robot.delay(200);
+
+                                        // Release the Tab key
+                                        robot.keyRelease(KeyEvent.VK_TAB);
+                                        // Release the Windows key
+                                        robot.keyRelease(KeyEvent.VK_WINDOWS);
+                                    }
 
                                 } catch (AWTException e) {
 
