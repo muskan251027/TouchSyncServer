@@ -4,6 +4,7 @@
  */
 package remoteserver;
 
+import java.awt.AWTException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -276,7 +277,8 @@ public class RemoteServer extends javax.swing.JFrame {
 
     private void startwifi() {
 
-        Thread worker = new Thread() {
+        Thread worker;
+        worker = new Thread() {
             @Override
             public void run() {
 
@@ -285,8 +287,8 @@ public class RemoteServer extends javax.swing.JFrame {
                     //Socket socket = new Socket("10.0.0.63", 80);
 
                     /*InetAddress addr = socket.getLocalAddress();
-                String hostAddr = addr.getHostAddress();
-                System.out.println("addr: " + addr);*/
+                    String hostAddr = addr.getHostAddress();
+                    System.out.println("addr: " + addr);*/
                     try {
                         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                         while (interfaces.hasMoreElements()) {
@@ -322,899 +324,923 @@ public class RemoteServer extends javax.swing.JFrame {
                     ServerSocket serverSocket = new ServerSocket(1234);
 
                     while (true) {
-
-                        Socket server = serverSocket.accept();
-                        InputStream outToClient = server.getInputStream();
-                        DataInputStream in = new DataInputStream(outToClient);
-
-                        OutputStream outputToClient = server.getOutputStream(); // Get the output stream to send data back to the client
-                        DataOutputStream out = new DataOutputStream(outputToClient); // Create a DataOutputStream to write data to the client
-
-                        String num = in.readUTF();
-                        System.out.println(num);
-                        if (num.equalsIgnoreCase("0")) {
-
-                            String responseMessage = "Success";
-                            out.writeUTF(responseMessage); // Write the string as a UTF-8 encoded string
-
-                        }
-                        if (num.equalsIgnoreCase("1")) {
-
-                            /*OutputStream outToClient1 = server.getOutputStream();                         
-                      DataOutputStream out = new DataOutputStream(outToClient1); 
-                      out.writeUTF("hello from server");*/
-                            String xaxis = in.readUTF();
-                            String yaxis = in.readUTF();
-                            //System.out.println("x: " + xaxis + ", y: " + yaxis);
-
-                            //Float movex = Float.parseFloat(xaxis)/30;
-                            //Float movey = Float.parseFloat(yaxis)/30;
-                            Float movex = Float.parseFloat(xaxis);
-                            Float movey = Float.parseFloat(yaxis);
-
-                            Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-                            int newX = (int) (mouseLocation.getX() + movex);
-                            int newY = (int) (mouseLocation.getY() + movey);
-                            robot = new Robot();
-                            robot.mouseMove(newX, newY);
-
-                            //Point point = MouseInfo.getPointerInfo().getLocation(); //Get current mouse position
-                            //float nowx = point.x;
-                            //float nowy = point.y;
-                            //System.out.println(nowx+movex+" "+nowy+movey);
-                            //robot = new Robot();
-                            //robot.mouseMove((int) (nowx + movex), (int) (nowy + movey));
-                        }
-                        if (num.equalsIgnoreCase("2")) {
-                            //System.out.println("Double Tap");
-                            robot = new Robot();
-                            /*robot.mousePress(InputEvent.BUTTON1_MASK);
-                       robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                       robot.mousePress(InputEvent.BUTTON1_MASK);
-                       robot.mouseRelease(InputEvent.BUTTON1_MASK);*/
-
-                            // Simulate a left mouse button click
-                            robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-                            robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-
-                        }
-                        if (num.equalsIgnoreCase("3")) {
-                            //System.out.println("Double Tap");
-                            robot = new Robot();
-                            /*robot.mousePress(InputEvent.BUTTON1_MASK);
-                       robot.mouseRelease(InputEvent.BUTTON1_MASK);
-                       robot.mousePress(InputEvent.BUTTON1_MASK);
-                       robot.mouseRelease(InputEvent.BUTTON1_MASK);*/
-
-                            // Simulate a right mouse button click
-                            robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
-                            robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
-
-                        }
-                        if (num.equalsIgnoreCase("4")) {
-                            System.out.println("4");
-                            robot = new Robot();
-                            robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-                        }
-                        if (num.equalsIgnoreCase("5")) {
-                            System.out.println("5");
-                            robot = new Robot();
-                            robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK); // release left mouse button
-
-                            // Simulate a double tap at coordinates (x, y)
-                            robot.delay(200); // wait between taps
-                            robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
-                            robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-                        }
-                        if (num.equalsIgnoreCase("6")) {
-                            System.out.println("6");
-                            robot = new Robot();
-                            String c = in.readUTF();
-                            System.out.println(c);
-                            if (c.equals("backspace")) {
-                                // Simulate pressing the backspace key
-                                robot.keyPress(KeyEvent.VK_BACK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_BACK_SPACE);
-                            } else {
-                                char ch = c.charAt(0);
-                                int asciiValue = (int) ch; // Convert char to int
-                                System.out.println(asciiValue); // Output: The character corresponding to the ASCII value
-                                char character = (char) asciiValue;
-                                System.out.println("character:" + character);
-                                switch (character) {
-                                    case ' ':
-                                        robot.keyPress(KeyEvent.VK_SPACE);
-                                        robot.keyRelease(KeyEvent.VK_SPACE);
-                                        break;
-                                    case '@':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_2);
-                                        robot.keyRelease(KeyEvent.VK_2);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '#':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_3);
-                                        robot.keyRelease(KeyEvent.VK_3);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '$':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_4);
-                                        robot.keyRelease(KeyEvent.VK_4);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '_':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_MINUS);
-                                        robot.keyRelease(KeyEvent.VK_MINUS);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '&':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_7);
-                                        robot.keyRelease(KeyEvent.VK_7);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '-':
-                                        robot.keyPress(KeyEvent.VK_MINUS);
-                                        robot.keyRelease(KeyEvent.VK_MINUS);
-                                        break;
-                                    case '+':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_EQUALS);
-                                        robot.keyRelease(KeyEvent.VK_EQUALS);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '(':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_9);
-                                        robot.keyRelease(KeyEvent.VK_9);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case ')':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_0);
-                                        robot.keyRelease(KeyEvent.VK_0);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '/':
-                                        robot.keyPress(KeyEvent.VK_SLASH);
-                                        robot.keyRelease(KeyEvent.VK_SLASH);
-                                        break;
-                                    case '*':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_8);
-                                        robot.keyRelease(KeyEvent.VK_8);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '"':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case ':':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_SEMICOLON);
-                                        robot.keyRelease(KeyEvent.VK_SEMICOLON);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case ';':
-                                        robot.keyPress(KeyEvent.VK_SEMICOLON);
-                                        robot.keyRelease(KeyEvent.VK_SEMICOLON);
-                                        break;
-                                    case '!':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_1);
-                                        robot.keyRelease(KeyEvent.VK_1);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '?':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_SLASH);
-                                        robot.keyRelease(KeyEvent.VK_SLASH);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '.':
-                                        robot.keyPress(KeyEvent.VK_PERIOD);
-                                        robot.keyRelease(KeyEvent.VK_PERIOD);
-                                        break;
-                                    case ',':
-                                        robot.keyPress(KeyEvent.VK_COMMA);
-                                        robot.keyRelease(KeyEvent.VK_COMMA);
-                                        break;
-                                    case '\'':
-                                        robot.keyPress(KeyEvent.VK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_QUOTE);
-                                        break;
-                                    case '~':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_BACK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_BACK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '`':
-                                        robot.keyPress(KeyEvent.VK_BACK_QUOTE);
-                                        robot.keyRelease(KeyEvent.VK_BACK_QUOTE);
-                                        break;
-                                    case '|':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-                                        robot.keyPress(KeyEvent.VK_BACK_SLASH);
-                                        robot.keyRelease(KeyEvent.VK_BACK_SLASH);
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '•':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD4);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD4);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD9);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD9);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '√':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD5);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD5);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case 'π':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 227 for the pi symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD7);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD7);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-
-                                        break;
-                                    case '÷':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0247 for the division sign using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD4);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD4);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD7);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD7);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '×':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0215 for the multiplication sign using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD5);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD5);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-
-                                        break;
-                                    case '§':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 21 for the section sign using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '∆':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 30 for the delta symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD3);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD3);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '£':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0163 for the pound symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD6);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD6);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD3);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD3);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '¢':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0162 for the cent symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD6);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD6);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '€':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0128 for the euro symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD8);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD8);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '¥':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate pressing the 'Y' key
-                                        robot.keyPress(KeyEvent.VK_Y);
-
-                                        // Simulate releasing the 'Y' key
-                                        robot.keyRelease(KeyEvent.VK_Y);
-
-                                        // Simulate releasing the Option key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '^':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the number 6 key
-                                        robot.keyPress(KeyEvent.VK_6);
-
-                                        // Simulate releasing the number 6 key
-                                        robot.keyRelease(KeyEvent.VK_6);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '°':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0176 for the degree symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD7);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD7);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD6);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD6);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '=':
-                                        robot.keyPress(KeyEvent.VK_EQUALS);
-                                        robot.keyRelease(KeyEvent.VK_EQUALS);
-                                        break;
-                                    case '{':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the open bracket key ('[') to type '{'
-                                        robot.keyPress(KeyEvent.VK_OPEN_BRACKET);
-
-                                        // Simulate releasing the open bracket key
-                                        robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-
-                                        break;
-                                    case '}':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the close bracket key (']') to type '}'
-                                        robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);
-
-                                        // Simulate releasing the close bracket key
-                                        robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '\\':
-                                        robot.keyPress(KeyEvent.VK_BACK_SLASH);
-
-                                        // Simulate releasing the backslash ('\') key
-                                        robot.keyRelease(KeyEvent.VK_BACK_SLASH);
-                                        break;
-                                    case '%':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the '5' key to type '%'
-                                        robot.keyPress(KeyEvent.VK_5);
-
-                                        // Simulate releasing the '5' key
-                                        robot.keyRelease(KeyEvent.VK_5);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '©':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0169 for the copyright symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD6);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD6);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD9);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD9);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '®':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0174 for the registered trademark symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD7);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD7);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD4);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD4);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '™':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0153 for the trademark symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD1);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD1);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD5);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD5);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD3);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD3);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-                                    case '✓':
-                                        robot.keyPress(KeyEvent.VK_ALT);
-
-                                        // Simulate typing the numeric code 0252 for the check mark symbol using the numeric keypad
-                                        robot.keyPress(KeyEvent.VK_NUMPAD0);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD0);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD5);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD5);
-
-                                        robot.keyPress(KeyEvent.VK_NUMPAD2);
-                                        robot.keyRelease(KeyEvent.VK_NUMPAD2);
-
-                                        // Simulate releasing the Alt key
-                                        robot.keyRelease(KeyEvent.VK_ALT);
-                                        break;
-
-                                    case '[':
-                                        robot.keyPress(KeyEvent.VK_OPEN_BRACKET);
-
-                                        // Simulate releasing the left square bracket ('[') key
-                                        robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);
-                                        break;
-                                    case ']':
-                                        robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);
-
-                                        // Simulate releasing the left square bracket ('[') key
-                                        robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);
-                                        break;
-                                    case '>':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the period key ('.') to type '>'
-                                        robot.keyPress(KeyEvent.VK_PERIOD);
-
-                                        // Simulate releasing the period key
-                                        robot.keyRelease(KeyEvent.VK_PERIOD);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-                                    case '<':
-                                        robot.keyPress(KeyEvent.VK_SHIFT);
-
-                                        // Simulate pressing the period key ('.') to type '>'
-                                        robot.keyPress(KeyEvent.VK_COMMA);
-
-                                        // Simulate releasing the period key
-                                        robot.keyRelease(KeyEvent.VK_COMMA);
-
-                                        // Simulate releasing the Shift key
-                                        robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        break;
-
-                                    default:
-                                    //Robot robot = new Robot();
-                                        if(Character.isUpperCase(character)) {
-                                            robot.keyPress(KeyEvent.VK_SHIFT);
-                                            robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
-                                            robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
-                                            robot.keyRelease(KeyEvent.VK_SHIFT);
-                                        }
-                                        else {
-                                            robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
-                                            robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
-                                        }
-                                    break;
+                        try {
+
+                            Socket server = serverSocket.accept();
+                            InputStream outToClient = server.getInputStream();
+                            DataInputStream in = new DataInputStream(outToClient);
+
+                            OutputStream outputToClient = server.getOutputStream(); // Get the output stream to send data back to the client
+                            DataOutputStream out = new DataOutputStream(outputToClient); // Create a DataOutputStream to write data to the client
+
+                            String num = in.readUTF();
+                            //System.out.println(num);
+                            if (num.equalsIgnoreCase("0")) {
+
+                                String responseMessage = "Success";
+                                out.writeUTF(responseMessage); // Write the string as a UTF-8 encoded string
+
+                            }
+                            if (num.equalsIgnoreCase("1")) {
+
+                                /*OutputStream outToClient1 = server.getOutputStream();
+                                DataOutputStream out = new DataOutputStream(outToClient1);
+                                out.writeUTF("hello from server");*/
+                                String xaxis = in.readUTF();
+                                String yaxis = in.readUTF();
+                                //System.out.println("x: " + xaxis + ", y: " + yaxis);
+
+                                //Float movex = Float.parseFloat(xaxis)/30;
+                                //Float movey = Float.parseFloat(yaxis)/30;
+                                Float movex = Float.parseFloat(xaxis);
+                                Float movey = Float.parseFloat(yaxis);
+
+                                Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+                                int newX = (int) (mouseLocation.getX() + movex);
+                                int newY = (int) (mouseLocation.getY() + movey);
+                                robot = new Robot();
+                                robot.mouseMove(newX, newY);
+
+                                //Point point = MouseInfo.getPointerInfo().getLocation(); //Get current mouse position
+                                //float nowx = point.x;
+                                //float nowy = point.y;
+                                //System.out.println(nowx+movex+" "+nowy+movey);
+                                //robot = new Robot();
+                                //robot.mouseMove((int) (nowx + movex), (int) (nowy + movey));
+                            }
+                            if (num.equalsIgnoreCase("2")) {
+                                //System.out.println("Double Tap");
+                                robot = new Robot();
+                                /*robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);*/
+
+                                // Simulate a left mouse button click
+                                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+
+                            }
+                            if (num.equalsIgnoreCase("3")) {
+                                //System.out.println("Double Tap");
+                                robot = new Robot();
+                                /*robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                robot.mousePress(InputEvent.BUTTON1_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);*/
+
+                                // Simulate a right mouse button click
+                                robot.mousePress(InputEvent.BUTTON3_DOWN_MASK);
+                                robot.mouseRelease(InputEvent.BUTTON3_DOWN_MASK);
+
+                            }
+                            if (num.equalsIgnoreCase("4")) {
+                                System.out.println("4");
+                                try {
+                                    robot = new Robot();
+                                    robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
+                                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                                } catch (Exception e) {
 
                                 }
+
                             }
+                            if (num.equalsIgnoreCase("5")) {
+                                System.out.println("5");
+                                robot = new Robot();
+                                robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK); // release left mouse button
 
-                        }
+                                // Simulate a double tap at coordinates (x, y)
+                                robot.delay(200); // wait between taps
+                                robot.mousePress(InputEvent.BUTTON1_MASK); // press left mouse button
+                                robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
-                        if (num.equalsIgnoreCase("7")) {
-                            System.out.println("7");
+                            }
+                            if (num.equalsIgnoreCase("6")) {
+                                //System.out.println("6");
+                                robot = new Robot();
+                                String c = in.readUTF();
+                                //System.out.println("readUTF:"+c);
+                                if (c.equals("backspace")) {
+                                    // Simulate pressing the backspace key
+                                    //int asciiValue = (int) '?';
+                                    //char character = (char) asciiValue;
 
-                            try {
+                                    robot.keyPress(KeyEvent.VK_BACK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_BACK_SPACE);
 
-                                Robot robot = new Robot();
-                                String format = "jpg";
-                                //String fileName = "FullScreenshot."+format;
-                                //String fileName = System.getProperty("user.home") + "/Desktop/FullScreenshot.jpg";
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                                String timestamp = dateFormat.format(new Date());
-                                // Construct filename with timestamp
-                                String osName = System.getProperty("os.name");
-                                String fileName = null;
-                                String directoryPath = null;
-                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
-                                    fileName = System.getProperty("user.home") + "/Desktop/FullScreenshot_" + timestamp + "." + format;
+                                    //robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
+                                    //robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                    //System.out.println("Inside Backspace:"+c);
                                 } else {
-                                    directoryPath = System.getenv("USERPROFILE") + "\\Documents\\ScreenCaptures";
-                                    File directory = new File(directoryPath);
-                                    if (!directory.exists()) {
-                                        directory.mkdirs(); // mkdirs() creates parent directories as well if they don't exist
+                                    //System.out.println("Inside else:"+c);
+                                    char ch = c.charAt(0);
+                                    int asciiValue = (int) ch; // Convert char to int
+                                    //System.out.println(asciiValue); // Output: The character corresponding to the ASCII value
+                                    char character = (char) asciiValue;
+                                    //System.out.println("character:" + character);
+                                    switch (character) {
+                                        case ' ':
+                                            robot.keyPress(KeyEvent.VK_SPACE);
+                                            robot.keyRelease(KeyEvent.VK_SPACE);
+                                            break;
+                                        case '@':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_2);
+                                            robot.keyRelease(KeyEvent.VK_2);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '#':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_3);
+                                            robot.keyRelease(KeyEvent.VK_3);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '$':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_4);
+                                            robot.keyRelease(KeyEvent.VK_4);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '_':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_MINUS);
+                                            robot.keyRelease(KeyEvent.VK_MINUS);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '&':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_7);
+                                            robot.keyRelease(KeyEvent.VK_7);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '-':
+                                            robot.keyPress(KeyEvent.VK_MINUS);
+                                            robot.keyRelease(KeyEvent.VK_MINUS);
+                                            break;
+                                        case '+':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_EQUALS);
+                                            robot.keyRelease(KeyEvent.VK_EQUALS);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '(':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_9);
+                                            robot.keyRelease(KeyEvent.VK_9);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case ')':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_0);
+                                            robot.keyRelease(KeyEvent.VK_0);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '/':
+                                            robot.keyPress(KeyEvent.VK_SLASH);
+                                            robot.keyRelease(KeyEvent.VK_SLASH);
+                                            break;
+                                        case '*':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_8);
+                                            robot.keyRelease(KeyEvent.VK_8);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '"':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case ':':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_SEMICOLON);
+                                            robot.keyRelease(KeyEvent.VK_SEMICOLON);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case ';':
+                                            robot.keyPress(KeyEvent.VK_SEMICOLON);
+                                            robot.keyRelease(KeyEvent.VK_SEMICOLON);
+                                            break;
+                                        case '!':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_1);
+                                            robot.keyRelease(KeyEvent.VK_1);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '?':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_SLASH);
+                                            robot.keyRelease(KeyEvent.VK_SLASH);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+
+                                            break;
+                                        case '.':
+                                            robot.keyPress(KeyEvent.VK_PERIOD);
+                                            robot.keyRelease(KeyEvent.VK_PERIOD);
+                                            break;
+                                        case ',':
+                                            robot.keyPress(KeyEvent.VK_COMMA);
+                                            robot.keyRelease(KeyEvent.VK_COMMA);
+                                            break;
+                                        case '\'':
+                                            robot.keyPress(KeyEvent.VK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_QUOTE);
+                                            break;
+                                        case '~':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_BACK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_BACK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '`':
+                                            robot.keyPress(KeyEvent.VK_BACK_QUOTE);
+                                            robot.keyRelease(KeyEvent.VK_BACK_QUOTE);
+                                            break;
+                                        case '|':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+                                            robot.keyPress(KeyEvent.VK_BACK_SLASH);
+                                            robot.keyRelease(KeyEvent.VK_BACK_SLASH);
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '•':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD4);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD4);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD9);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD9);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '√':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD5);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD5);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case 'π':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 227 for the pi symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD7);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD7);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+
+                                            break;
+                                        case '÷':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0247 for the division sign using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD4);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD4);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD7);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD7);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '×':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0215 for the multiplication sign using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD5);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD5);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+
+                                            break;
+                                        case '§':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 21 for the section sign using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '∆':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 30 for the delta symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD3);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD3);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '£':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0163 for the pound symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD6);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD6);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD3);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD3);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '¢':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0162 for the cent symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD6);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD6);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '€':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0128 for the euro symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD8);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD8);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '¥':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate pressing the 'Y' key
+                                            robot.keyPress(KeyEvent.VK_Y);
+
+                                            // Simulate releasing the 'Y' key
+                                            robot.keyRelease(KeyEvent.VK_Y);
+
+                                            // Simulate releasing the Option key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '^':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the number 6 key
+                                            robot.keyPress(KeyEvent.VK_6);
+
+                                            // Simulate releasing the number 6 key
+                                            robot.keyRelease(KeyEvent.VK_6);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '°':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0176 for the degree symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD1);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD1);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD7);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD7);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD6);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD6);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+                                        case '=':
+                                            robot.keyPress(KeyEvent.VK_EQUALS);
+                                            robot.keyRelease(KeyEvent.VK_EQUALS);
+                                            break;
+                                        case '{':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the open bracket key ('[') to type '{'
+                                            robot.keyPress(KeyEvent.VK_OPEN_BRACKET);
+
+                                            // Simulate releasing the open bracket key
+                                            robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+
+                                            break;
+                                        case '}':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the close bracket key (']') to type '}'
+                                            robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);
+
+                                            // Simulate releasing the close bracket key
+                                            robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '\\':
+                                            robot.keyPress(KeyEvent.VK_BACK_SLASH);
+
+                                            // Simulate releasing the backslash ('\') key
+                                            robot.keyRelease(KeyEvent.VK_BACK_SLASH);
+                                            break;
+                                        case '%':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the '5' key to type '%'
+                                            robot.keyPress(KeyEvent.VK_5);
+
+                                            // Simulate releasing the '5' key
+                                            robot.keyRelease(KeyEvent.VK_5);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+
+                                        case '✓':
+                                            robot.keyPress(KeyEvent.VK_ALT);
+
+                                            // Simulate typing the numeric code 0252 for the check mark symbol using the numeric keypad
+                                            robot.keyPress(KeyEvent.VK_NUMPAD0);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD0);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD5);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD5);
+
+                                            robot.keyPress(KeyEvent.VK_NUMPAD2);
+                                            robot.keyRelease(KeyEvent.VK_NUMPAD2);
+
+                                            // Simulate releasing the Alt key
+                                            robot.keyRelease(KeyEvent.VK_ALT);
+                                            break;
+
+                                        case '[':
+                                            robot.keyPress(KeyEvent.VK_OPEN_BRACKET);
+
+                                            // Simulate releasing the left square bracket ('[') key
+                                            robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);
+                                            break;
+                                        case ']':
+                                            robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);
+
+                                            // Simulate releasing the left square bracket ('[') key
+                                            robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);
+                                            break;
+                                        case '>':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the period key ('.') to type '>'
+                                            robot.keyPress(KeyEvent.VK_PERIOD);
+
+                                            // Simulate releasing the period key
+                                            robot.keyRelease(KeyEvent.VK_PERIOD);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+                                        case '<':
+                                            robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                            // Simulate pressing the period key ('.') to type '>'
+                                            robot.keyPress(KeyEvent.VK_COMMA);
+
+                                            // Simulate releasing the period key
+                                            robot.keyRelease(KeyEvent.VK_COMMA);
+
+                                            // Simulate releasing the Shift key
+                                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                                            break;
+
+                                        default:
+                                            //Robot robot = new Robot();
+                                            System.out.println("character:" + character);
+                                            if (Character.isUpperCase(character)) {
+                                                robot.keyPress(KeyEvent.VK_SHIFT);
+                                                robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
+                                                robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                                robot.keyRelease(KeyEvent.VK_SHIFT);
+                                                System.out.println("character Upper:" + character);
+                                            } else {
+                                                robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(character));
+                                                robot.keyRelease(KeyEvent.getExtendedKeyCodeForChar(character));
+                                                //System.out.println("character Lower:" + character);
+
+                                            }
+                                            break;
+
                                     }
-                                    fileName = directoryPath + "\\FullScreenshot_" + timestamp + "." + format;
-                                    System.out.println(fileName);
-                                }
-                                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                                BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
-                                ImageIO.write(screenFullImage, format, new File(fileName));
-
-                                out.writeUTF(fileName);
-
-                            } catch (Exception e) {
-                                System.out.println(e);
-                            }
-
-                        }
-                        if (num.equalsIgnoreCase("8")) {
-                            System.out.println("8");
-
-                            Robot robot = new Robot();
-
-                            // Simulate scrolling up (pressing the Up arrow key)
-                            /*robot.keyPress(KeyEvent.VK_UP);
-                    robot.delay(100); // Delay for a short time to ensure the key press is registered
-                    robot.keyRelease(KeyEvent.VK_UP);*/
-                            for (int i = 1; i <= 3; i++) {
-                                robot.mouseWheel(i);
-                            }
-
-                        }
-                        if (num.equalsIgnoreCase("9")) {
-                            System.out.println("9");
-
-                            Robot robot = new Robot();
-
-                            // Simulate scrolling down (negative value)
-                            for (int i = -1; i >= -3; i--) {
-                                robot.mouseWheel(i);
-                            }
-
-                            // Simulate scrolling down (pressing the Down arrow key)
-                            //robot.keyPress(KeyEvent.VK_DOWN);
-                            //robot.delay(100); // Delay for a short time to ensure the key press is registered
-                            //robot.keyRelease(KeyEvent.VK_DOWN);
-                        }
-                        if (num.equalsIgnoreCase("10")) {
-                            System.out.println("10");
-
-                            String osName = System.getProperty("os.name");
-                            // Get OS version
-                            String osVersion = System.getProperty("os.version");
-                            // Get OS architecture
-                            String osArch = System.getProperty("os.arch");
-
-                            // Print the OS properties
-                            System.out.println("Operating System Name: " + osName);
-                            System.out.println("Operating System Version: " + osVersion);
-                            System.out.println("Operating System Architecture: " + osArch);
-                            if (osName.toLowerCase().contains("Mac".toLowerCase())) {
-
-                                Robot robot = new Robot();
-
-                                // Delay to allow the program to run after starting
-                                robot.delay(1000);
-
-                                // Simulate pressing Fn + F11 to reveal the desktop
-                                // If Fn key is needed, press it first
-                                // Some MacBooks do not require the Fn key
-                                robot.keyPress(KeyEvent.VK_F11);
-                                robot.keyRelease(KeyEvent.VK_F11);
-
-                            } else {
-
-                                Robot robot = new Robot();
-
-                                // Delay to allow the program to start and stabilize
-                                robot.delay(1000);
-
-                                // Simulate pressing Windows + D to show the desktop
-                                robot.keyPress(KeyEvent.VK_WINDOWS); // Press the Windows key
-                                robot.keyPress(KeyEvent.VK_D); // Press the D key
-
-                                // Release the keys
-                                robot.keyRelease(KeyEvent.VK_D);
-                                robot.keyRelease(KeyEvent.VK_WINDOWS);
-
-                            }
-
-                        }
-                        if (num.equalsIgnoreCase("11")) {
-                            System.out.println("11");
-                            String osName = System.getProperty("os.name");
-                            if (osName.toLowerCase().contains("Mac".toLowerCase())) {
-
-                                Robot robot = new Robot();
-
-                                // Delay to allow the program to run after starting
-                                robot.delay(1000);
-
-                                // Simulate pressing Command + Space to open Spotlight Search
-                                robot.keyPress(KeyEvent.VK_META);
-                                robot.keyPress(KeyEvent.VK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_META);
-
-                                // Delay to allow time for Spotlight Search to open
-                                robot.delay(500);
-
-                                // Simulate typing "Terminal"
-                                String terminalCommand = "Terminal";
-                                for (char c : terminalCommand.toCharArray()) {
-                                    int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-                                    robot.keyPress(keyCode);
-                                    robot.keyRelease(keyCode);
-                                    robot.delay(50); // Add delay between typing each character
-
-                                }
-                                // Delay to allow time for typing to complete
-                                robot.delay(500);
-
-                                // Simulate pressing Enter to open Terminal
-                                robot.keyPress(KeyEvent.VK_ENTER);
-                                robot.keyRelease(KeyEvent.VK_ENTER);
-
-                            } else {
-
-                                Robot robot = new Robot();
-
-                                // Delay to allow the program to start and stabilize
-                                robot.delay(1000);
-
-                                // Step 1: Simulate pressing Win + R to open the Run dialog
-                                robot.keyPress(KeyEvent.VK_WINDOWS); // Press the Windows key
-                                robot.keyPress(KeyEvent.VK_R); // Press the R key
-
-                                // Release the keys
-                                robot.keyRelease(KeyEvent.VK_R);
-                                robot.keyRelease(KeyEvent.VK_WINDOWS);
-
-                                // Delay to allow the Run dialog to open
-                                robot.delay(500);
-
-                                // Step 2: Type "cmd" to open Command Prompt
-                                String cmd = "cmd";
-                                for (char c : cmd.toCharArray()) {
-                                    int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-                                    robot.keyPress(keyCode);
-                                    robot.keyRelease(keyCode);
-                                    // Add a small delay between each character
-                                    robot.delay(50);
                                 }
 
-                                // Delay to allow time for typing to complete
-                                robot.delay(500);
-
-                                // Step 3: Press Enter to launch Command Prompt
-                                robot.keyPress(KeyEvent.VK_ENTER);
-                                robot.keyRelease(KeyEvent.VK_ENTER);
-
                             }
 
-                        }
-                        if (num.equalsIgnoreCase("12")) {
-                            System.out.println("12");
+                            if (num.equalsIgnoreCase("7")) {
+                                System.out.println("7");
 
-                            String osName = System.getProperty("os.name");
-                            if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+                                try {
+
+                                    Robot robot = new Robot();
+                                    String format = "jpg";
+                                    //String fileName = "FullScreenshot."+format;
+                                    //String fileName = System.getProperty("user.home") + "/Desktop/FullScreenshot.jpg";
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                                    String timestamp = dateFormat.format(new Date());
+                                    // Construct filename with timestamp
+                                    String osName = System.getProperty("os.name");
+                                    String fileName = null;
+                                    String directoryPath = null;
+                                    if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+                                        fileName = System.getProperty("user.home") + "/Desktop/FullScreenshot_" + timestamp + "." + format;
+                                    } else {
+                                        directoryPath = System.getenv("USERPROFILE") + "\\Documents\\ScreenCaptures";
+                                        File directory = new File(directoryPath);
+                                        if (!directory.exists()) {
+                                            directory.mkdirs(); // mkdirs() creates parent directories as well if they don't exist
+                                        }
+                                        fileName = directoryPath + "\\FullScreenshot_" + timestamp + "." + format;
+                                        System.out.println(fileName);
+                                    }
+                                    Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                                    BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+                                    ImageIO.write(screenFullImage, format, new File(fileName));
+
+                                    out.writeUTF(fileName);
+
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                }
+
+                            }
+                            if (num.equalsIgnoreCase("8")) {
+                                System.out.println("8");
 
                                 Robot robot = new Robot();
 
-                                // Delay to allow the program to run after starting
-                                robot.delay(1000);
-
-                                // Simulate pressing Command + Space to open Spotlight Search
-                                robot.keyPress(KeyEvent.VK_META);
-                                robot.keyPress(KeyEvent.VK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_META);
-
-                                // Delay to allow time for Spotlight Search to open
-                                robot.delay(500);
-
-                                // Simulate typing "Notes"
-                                String notesCommand = "Notes";
-                                for (char c : notesCommand.toCharArray()) {
-                                    int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-                                    robot.keyPress(keyCode);
-                                    robot.keyRelease(keyCode);
-                                    robot.delay(50); // Add delay between typing each character
+                                // Simulate scrolling up (pressing the Up arrow key)
+                                /*robot.keyPress(KeyEvent.VK_UP);
+                                robot.delay(100); // Delay for a short time to ensure the key press is registered
+                                robot.keyRelease(KeyEvent.VK_UP);*/
+                                for (int i = 1; i <= 3; i++) {
+                                    robot.mouseWheel(i);
                                 }
 
-                                // Delay to allow time for typing to complete
-                                robot.delay(500);
-
-                                // Simulate pressing Enter to open Notes
-                                robot.keyPress(KeyEvent.VK_ENTER);
-                                robot.keyRelease(KeyEvent.VK_ENTER);
-
-                            } else {
-                                Runtime.getRuntime().exec("notepad.exe");
                             }
+                            if (num.equalsIgnoreCase("9")) {
+                                System.out.println("9");
 
-                        }
-                        if (num.equalsIgnoreCase("13")) {
-                            System.out.println("13");
-
-                            String osName = System.getProperty("os.name");
-                            if (osName.toLowerCase().contains("Mac".toLowerCase())) {
-
-                                // Create a Robot instance
                                 Robot robot = new Robot();
 
-                                // Delay to allow the program to run and stabilize
-                                robot.delay(1000);
-
-                                // Step 1: Open Spotlight Search using Cmd + Space
-                                robot.keyPress(KeyEvent.VK_META); // Command key
-                                robot.keyPress(KeyEvent.VK_SPACE); // Space key
-                                robot.keyRelease(KeyEvent.VK_SPACE);
-                                robot.keyRelease(KeyEvent.VK_META);
-
-                                // Add a delay to allow Spotlight Search to open
-                                robot.delay(500);
-
-                                // Step 2: Type "Calculator" into Spotlight Search
-                                String searchQuery = "Calculator";
-                                for (char c : searchQuery.toCharArray()) {
-                                    int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
-                                    robot.keyPress(keyCode);
-                                    robot.keyRelease(keyCode);
-                                    // Add a small delay between each character
-                                    robot.delay(50);
+                                // Simulate scrolling down (negative value)
+                                for (int i = -1; i >= -3; i--) {
+                                    robot.mouseWheel(i);
                                 }
 
-                                // Add a delay to allow Spotlight Search to recognize the query
-                                robot.delay(500);
-
-                                // Step 3: Press Enter to open Calculator
-                                robot.keyPress(KeyEvent.VK_ENTER);
-                                robot.keyRelease(KeyEvent.VK_ENTER);
-
-                            } else {
-                                Runtime.getRuntime().exec("calc.exe");
+                                // Simulate scrolling down (pressing the Down arrow key)
+                                //robot.keyPress(KeyEvent.VK_DOWN);
+                                //robot.delay(100); // Delay for a short time to ensure the key press is registered
+                                //robot.keyRelease(KeyEvent.VK_DOWN);
                             }
+                            if (num.equalsIgnoreCase("10")) {
+                                System.out.println("10");
+
+                                String osName = System.getProperty("os.name");
+                                // Get OS version
+                                String osVersion = System.getProperty("os.version");
+                                // Get OS architecture
+                                String osArch = System.getProperty("os.arch");
+
+                                // Print the OS properties
+                                System.out.println("Operating System Name: " + osName);
+                                System.out.println("Operating System Version: " + osVersion);
+                                System.out.println("Operating System Architecture: " + osArch);
+                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to run after starting
+                                    robot.delay(1000);
+
+                                    // Simulate pressing Fn + F11 to reveal the desktop
+                                    // If Fn key is needed, press it first
+                                    // Some MacBooks do not require the Fn key
+                                    robot.keyPress(KeyEvent.VK_F11);
+                                    robot.keyRelease(KeyEvent.VK_F11);
+
+                                } else {
+
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to start and stabilize
+                                    robot.delay(1000);
+
+                                    // Simulate pressing Windows + D to show the desktop
+                                    robot.keyPress(KeyEvent.VK_WINDOWS); // Press the Windows key
+                                    robot.keyPress(KeyEvent.VK_D); // Press the D key
+
+                                    // Release the keys
+                                    robot.keyRelease(KeyEvent.VK_D);
+                                    robot.keyRelease(KeyEvent.VK_WINDOWS);
+
+                                }
+
+                            }
+                            if (num.equalsIgnoreCase("11")) {
+                                System.out.println("11");
+                                String osName = System.getProperty("os.name");
+                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to run after starting
+                                    robot.delay(1000);
+
+                                    // Simulate pressing Command + Space to open Spotlight Search
+                                    robot.keyPress(KeyEvent.VK_META);
+                                    robot.keyPress(KeyEvent.VK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_META);
+
+                                    // Delay to allow time for Spotlight Search to open
+                                    robot.delay(500);
+
+                                    // Simulate typing "Terminal"
+                                    String terminalCommand = "Terminal";
+                                    for (char c : terminalCommand.toCharArray()) {
+                                        int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
+                                        robot.keyPress(keyCode);
+                                        robot.keyRelease(keyCode);
+                                        robot.delay(50); // Add delay between typing each character
+
+                                    }
+                                    // Delay to allow time for typing to complete
+                                    robot.delay(500);
+
+                                    // Simulate pressing Enter to open Terminal
+                                    robot.keyPress(KeyEvent.VK_ENTER);
+                                    robot.keyRelease(KeyEvent.VK_ENTER);
+
+                                } else {
+
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to start and stabilize
+                                    robot.delay(1000);
+
+                                    // Step 1: Simulate pressing Win + R to open the Run dialog
+                                    robot.keyPress(KeyEvent.VK_WINDOWS); // Press the Windows key
+                                    robot.keyPress(KeyEvent.VK_R); // Press the R key
+
+                                    // Release the keys
+                                    robot.keyRelease(KeyEvent.VK_R);
+                                    robot.keyRelease(KeyEvent.VK_WINDOWS);
+
+                                    // Delay to allow the Run dialog to open
+                                    robot.delay(500);
+
+                                    // Step 2: Type "cmd" to open Command Prompt
+                                    String cmd = "cmd";
+                                    for (char c : cmd.toCharArray()) {
+                                        int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
+                                        robot.keyPress(keyCode);
+                                        robot.keyRelease(keyCode);
+                                        // Add a small delay between each character
+                                        robot.delay(50);
+                                    }
+
+                                    // Delay to allow time for typing to complete
+                                    robot.delay(500);
+
+                                    // Step 3: Press Enter to launch Command Prompt
+                                    robot.keyPress(KeyEvent.VK_ENTER);
+                                    robot.keyRelease(KeyEvent.VK_ENTER);
+
+                                }
+
+                            }
+                            if (num.equalsIgnoreCase("12")) {
+                                System.out.println("12");
+
+                                String osName = System.getProperty("os.name");
+                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to run after starting
+                                    robot.delay(1000);
+
+                                    // Simulate pressing Command + Space to open Spotlight Search
+                                    robot.keyPress(KeyEvent.VK_META);
+                                    robot.keyPress(KeyEvent.VK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_META);
+
+                                    // Delay to allow time for Spotlight Search to open
+                                    robot.delay(500);
+
+                                    // Simulate typing "Notes"
+                                    String notesCommand = "Notes";
+                                    for (char c : notesCommand.toCharArray()) {
+                                        int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
+                                        robot.keyPress(keyCode);
+                                        robot.keyRelease(keyCode);
+                                        robot.delay(50); // Add delay between typing each character
+                                    }
+
+                                    // Delay to allow time for typing to complete
+                                    robot.delay(500);
+
+                                    // Simulate pressing Enter to open Notes
+                                    robot.keyPress(KeyEvent.VK_ENTER);
+                                    robot.keyRelease(KeyEvent.VK_ENTER);
+
+                                } else {
+                                    Runtime.getRuntime().exec("notepad.exe");
+                                }
+
+                            }
+                            if (num.equalsIgnoreCase("13")) {
+                                System.out.println("13");
+
+                                String osName = System.getProperty("os.name");
+                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+
+                                    // Create a Robot instance
+                                    Robot robot = new Robot();
+
+                                    // Delay to allow the program to run and stabilize
+                                    robot.delay(1000);
+
+                                    // Step 1: Open Spotlight Search using Cmd + Space
+                                    robot.keyPress(KeyEvent.VK_META); // Command key
+                                    robot.keyPress(KeyEvent.VK_SPACE); // Space key
+                                    robot.keyRelease(KeyEvent.VK_SPACE);
+                                    robot.keyRelease(KeyEvent.VK_META);
+
+                                    // Add a delay to allow Spotlight Search to open
+                                    robot.delay(500);
+
+                                    // Step 2: Type "Calculator" into Spotlight Search
+                                    String searchQuery = "Calculator";
+                                    for (char c : searchQuery.toCharArray()) {
+                                        int keyCode = KeyEvent.getExtendedKeyCodeForChar(c);
+                                        robot.keyPress(keyCode);
+                                        robot.keyRelease(keyCode);
+                                        // Add a small delay between each character
+                                        robot.delay(50);
+                                    }
+
+                                    // Add a delay to allow Spotlight Search to recognize the query
+                                    robot.delay(500);
+
+                                    // Step 3: Press Enter to open Calculator
+                                    robot.keyPress(KeyEvent.VK_ENTER);
+                                    robot.keyRelease(KeyEvent.VK_ENTER);
+
+                                } else {
+                                    Runtime.getRuntime().exec("calc.exe");
+                                }
+                            }
+                            if (num.equalsIgnoreCase("14")) {
+                                System.out.println("14");
+                            }
+                            if (num.equalsIgnoreCase("15")) {
+                                System.out.println("15");
+                                // Create an instance of Robot class
+                                //Robot robot = new Robot();
+                                robot = new Robot();
+                                // Define the mouse button you want to press (left button in this case)
+                                int mouseButton = InputEvent.BUTTON1_DOWN_MASK;
+
+                                // Press and hold the left mouse button
+                                robot.mousePress(mouseButton);
+
+                                // Specify the duration for the long press (in milliseconds)
+                                int longPressDuration = 2000; // Hold the mouse button down for 2 seconds
+
+                                // Wait for the long press duration
+                                robot.delay(longPressDuration);
+
+                                // Release the left mouse button
+                                robot.mouseRelease(mouseButton);
+                            }
+                            if (num.equalsIgnoreCase("16")) {
+                                System.out.println("16");
+                                // Press the Control key
+                                try {
+                                    String osName = System.getProperty("os.name");
+                                if (osName.toLowerCase().contains("Mac".toLowerCase())) {
+                                    // Press the Control key
+                                    robot = new Robot();
+                                    robot.keyPress(KeyEvent.VK_CONTROL);
+
+                                    // Press the Up Arrow key
+                                    robot.keyPress(KeyEvent.VK_UP);
+
+                                    // Hold the keys for a moment (adjust as needed)
+                                    //robot.delay(1000);
+                                    // Release the Up Arrow key
+                                    robot.keyRelease(KeyEvent.VK_UP);
+                                    // Release the Control key first
+                                    robot.keyRelease(KeyEvent.VK_CONTROL);
+                                    
+                                }else{
+
+                                    // Press the Windows key
+                                    robot.keyPress(KeyEvent.VK_WINDOWS);
+                                    // Press the Tab key while the Windows key is still pressed
+                                    robot.keyPress(KeyEvent.VK_TAB);
+
+                                    // Delay to hold the keys for a short duration
+                                    robot.delay(200);
+
+                                    // Release the Tab key
+                                    robot.keyRelease(KeyEvent.VK_TAB);
+                                    // Release the Windows key
+                                    robot.keyRelease(KeyEvent.VK_WINDOWS);
+                                }
+
+                                } catch (AWTException e) {
+
+                                }
+                            }
+                            in.close();
+                            out.close();
+                            server.close();
+                        } catch (Exception e) {
+
                         }
-                        if (num.equalsIgnoreCase("14")) {
-                            System.out.println("14");
-                        }
-                        in.close();
-                        out.close();
-                        server.close();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
